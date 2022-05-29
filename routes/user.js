@@ -12,4 +12,10 @@ router.get("/", userController.getAllUser);
 //Delete user
 router.delete("/:id", userController.deleteUser);
 
+//Update user
+router.put("/:id", userController.updateUser);
+
+//Add friends
+router.put("/addFriends/:id", userController.addFriends);
+
 module.exports = router;
