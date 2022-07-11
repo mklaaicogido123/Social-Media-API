@@ -1,4 +1,6 @@
+const { json } = require("express/lib/response");
 const { User } = require("../model/user");
+const bcrypt = require("bcrypt");
 
 const userController = {
   //Add user
@@ -18,6 +20,7 @@ const userController = {
       const users = await User.find().populate("matches");
       res.status(200).json(users);
     } catch (error) {
+      console.log(error.message);
       res.status(500).json(error.message);
     }
   },
@@ -38,9 +41,15 @@ const userController = {
     try {
       const user = await User.findById(req.params.id);
       await user.updateOne({ $set: req.body });
+      console.log("hash password");
+      if (req.body.hash_password) {
+        const salt = await bcrypt.genSalt(10);
+        const hashed = await bcrypt.hash(req.body.hash_password, salt);
+        await user.updateOne({ hash_password: hashed });
+      }
       res.status(200).json("Updated successfully!");
     } catch (error) {
-      res.status(00).json(error.message);
+      res.status(500).json(error.message);
     }
   },
 
@@ -58,6 +67,29 @@ const userController = {
       res.status(200).json(friend);
     } catch (error) {
       res.status(500).json(error.message);
+    }
+  },
+
+  //Login
+  Login: async (req, res) => {
+    try {
+      // const username = req.body.username.toLowerCase() || "test";
+      // const password = req.body.password || "12345";
+
+      const query = { _id: "62907aa4f94deedbe9863ad6", hash_pasword: "12345" };
+
+      const user = await User.find(query);
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+  getUserByName: async (req, res) => {
+    try {
+      const user = await User.findOne({ name: req.params.username });
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json(error);
     }
   },
 };

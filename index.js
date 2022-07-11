@@ -7,8 +7,10 @@ const morgan = require("morgan");
 const dotenv = require("dotenv");
 
 const userRoute = require("./routes/user");
+const authRoute = require("./routes/auth");
+const postRoute = require("./routes/post");
 
-const port = 3000;
+const port = 8000;
 dotenv.config();
 const strConnection =
   "mongodb+srv://duyphong1504:Duyphong1504@cluster0.svap3.mongodb.net/?retryWrites=true&w=majority";
@@ -28,6 +30,8 @@ app.get("/api", (req, res) => {
 
 //routes
 app.use("/user", userRoute);
+app.use("/auth", authRoute);
+app.use("/post", postRoute);
 
 app.listen(process.env.PORT || port, () => {
   console.log("Server is running...");

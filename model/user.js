@@ -1,6 +1,13 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
+  user_name: {
+    type: String,
+    required: true,
+    minlength: 6,
+    maxlength: 20,
+    unique: true,
+  },
   name: {
     type: String,
     required: true,
@@ -37,6 +44,10 @@ const userSchema = new mongoose.Schema({
   createAt: {
     type: Date,
     default: Date.now,
+  },
+  admin: {
+    type: Boolean,
+    default: false,
   },
 });
 
