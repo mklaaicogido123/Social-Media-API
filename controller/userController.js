@@ -20,7 +20,6 @@ const userController = {
       const users = await User.find().populate("matches");
       res.status(200).json(users);
     } catch (error) {
-      console.log(error.message);
       res.status(500).json(error.message);
     }
   },

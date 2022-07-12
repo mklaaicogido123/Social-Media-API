@@ -15,7 +15,12 @@ const postController = {
     try {
       const user = await User.findOne({ name: req.params.username });
       const posts = await Post.find({ userId: user._id }).populate("userId");
-      res.status(200).json(posts);
+      const lists = posts.sort((p1, p2) => {
+        return new Date(p2.createAt) - new Date(p1.createAt);
+      });
+      lists.reverse();
+
+      res.status(200).json(lists);
     } catch (err) {
       res.status(500).json(err);
     }
@@ -23,7 +28,11 @@ const postController = {
   getAllPost: async (req, res) => {
     try {
       const posts = await Post.find().populate("userId");
-      res.status(200).json(posts);
+      const lists = posts.sort((p1, p2) => {
+        return new Date(p2.createAt) - new Date(p1.createAt);
+      });
+      lists.reverse();
+      res.status(200).json(lists);
     } catch (err) {
       res.status(500).json(err);
     }
