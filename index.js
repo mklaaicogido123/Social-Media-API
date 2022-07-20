@@ -7,6 +7,8 @@ const morgan = require("morgan");
 const dotenv = require("dotenv");
 const http = require("http");
 const server = http.createServer(app);
+const { Message } = require("./model/message");
+const res = require("express/lib/response");
 
 const userRoute = require("./routes/user");
 const authRoute = require("./routes/auth");
@@ -45,16 +47,36 @@ const socketIo = require("socket.io")(server, {
     origin: "*",
   },
 });
+//
+const getLastMessage = async () => {
+  try {
+    let result = await Message.find({
+      chatId: "62d0bab0742850e99e58c4c2",
+    });
+    // const last = result[result.length - 1];
+    return result;
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
 // nhớ thêm cái cors này để tránh bị Exception nhé :D  ở đây mình làm nhanh nên cho phép tất cả các trang đều cors được.
 
 socketIo.on("connection", (socket) => {
   ///Handle khi có connect từ client tới
   console.log("New client connected " + socket.id);
 
-  socket.on("sendDataClient", function (data) {
-    console.log("data");
+  socket.timeout(5000).on("sendDataClient", async (data) => {
     // Handle khi có sự kiện tên là sendDataClient từ phía client
-    socketIo.emit("sendDataServer", { data }); // phát sự kiện  có tên sendDataServer cùng với dữ liệu tin nhắn từ phía server
+    // phát sự kiện  có tên sendDataServer cùng với dữ liệu tin nhắn từ phía server
+    console.log("Data:" + data);
+    let roomMessage = await getLastMessage();
+    console.log(roomMessage);
+    socket.timeout(5000).emit("sendDataServer", JSON.stringify(roomMessage));
+  });
+
+  socket.on("baby", (msg) => {
+    console.log(msg);
   });
 
   socket.on("disconnect", () => {
