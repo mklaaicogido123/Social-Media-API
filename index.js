@@ -69,14 +69,8 @@ socketIo.on("connection", (socket) => {
   socket.timeout(5000).on("sendDataClient", async (data) => {
     // Handle khi có sự kiện tên là sendDataClient từ phía client
     // phát sự kiện  có tên sendDataServer cùng với dữ liệu tin nhắn từ phía server
-    console.log("Data:" + data);
     let roomMessage = await getLastMessage();
-    console.log(roomMessage);
     socket.timeout(5000).emit("sendDataServer", JSON.stringify(roomMessage));
-  });
-
-  socket.on("baby", (msg) => {
-    console.log(msg);
   });
 
   socket.on("disconnect", () => {
